@@ -34,6 +34,9 @@ function sortNumber(a,b) {
 }
 //https://stackoverflow.com/questions/1063007/how-to-sort-an-array-of-integers-correctly
 
+
+
+
 //---------------------------------------
 // create route for index page
 //---------------------------------------
@@ -107,6 +110,42 @@ app.get('/character/:name', (req, res) => {
 });
 
 
+//
+// Extract name from residents
+//
+function extractNames(param) {
+	return Promise.all(
+		param.map(residentUri => {
+			return rp({
+				uri: residentUri,
+			  	json: true
+			})
+		})
+	).then(residents => {
+		const residentNames = residents.map(resident => {
+			return resident.name
+		})
+		return residentNames;
+	}).catch (err => {
+		console.log(err);
+	})
+}
+
+function getPlanets(planets) {
+	const result = {};
+	return Promise.all(
+		planets.map(planet => {
+			const planetProcessed = planet;
+			return extractNames(planetProcessed.residents)
+				.then(residentNames => {
+					result[planet.name] = residentNames
+				})
+		})
+	)
+	.then(() => {
+		return result;
+	})
+}
 
 //-------------------------------------------------------
 // create route for planetresidents page - raw json
@@ -118,45 +157,16 @@ app.get('/planetresidents', (req, res, next)  => {
 	})
 	.then((data) => {
 		let planets = data.results;
-		let planet = '';
-		let residentsObject = {};
-		planets.forEach(function(planet) {
-			let key;
-			let value = '';
-			let residents = new Array();
-			let resident = '';
-			let planetResidentsUri = '';
-			key = planet.name;
-			residentsObject[key] = [];
-			planetResidentsUri = planet.residents;
-			planetResidentsUri.forEach(function(residentUri) {
-				rp({
-					uri: residentUri,
-				  	json: true
-				})
-				.then((data) => {
-					resident = data.name;	
-					residents.push(resident)
-				})
-				.then((data) => {
-					//console.log(residents);
-					Object.assign(residentsObject[key],residents);
-				})
-				.catch((err) => {
-					console.log(err);
-				})
+		getPlanets(planets)
+		.then(p => {
+			res.render('pages/planetresidents', {
+				data: JSON.stringify(p)
 			});
-			
-			//console.log(residentsObject);
-			return residentsObject;
 		});
-		let newObject = JSON.stringify(residentsObject);
-		res.render('pages/planetresidents', {
-			data: newObject
-		});
+		
 	})
 	.catch((err) => {
-		console.log("stuff", err);
+		console.log(err);
 	})
 });
 
