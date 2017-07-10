@@ -8,7 +8,8 @@
 const express = require('express');
 const rp = require('request-promise');
 const app = express();
-const async = require('async');
+const server = http.createServer(app);
+const port = process.env.PORT || 8088;
 
 //---------------------------------------
 // set the view engine to ejs
@@ -162,7 +163,11 @@ app.get('/planetresidents', (req, res, next)  => {
 //---------------------------------------
 // set up port listener
 //---------------------------------------
-app.listen(8088);
+server.listen(port,'0.0.0.0',function(){
+ server.close(function(){
+   server.listen(port,'0.0.0.0')
+ })
+})
 console.log('8088 is the magic port');
 
 

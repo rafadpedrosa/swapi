@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Star Wars API demo",
   "main": "index.ejs",
+  "start": "node server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -21,7 +22,6 @@
   },
   "homepage": "https://github.com/jffgrdnr/swapi#readme",
   "dependencies": {
-    "async": "^2.5.0",
     "ejs": "^2.5.6",
     "express": "^4.15.3",
     "request": "^2.81.0",
