@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Star Wars API</title>
+    <% include ../partials/head %>
+</head>
+<body class="container">
+	<header>
+	    <% include ../partials/header %>
+	</header>
+	<main>
+	    <div class="jumbotron">
+	        <h1>Star Wars Characters</h1>
+	        <table>
+	        	<tbody>
+	        		<% data.forEach(function(character) { %>
+	        		<tr>
+	        			<td>Name: <span class="bold"><%= character.name %></span></td>
+	        			<td>Mass: <span class="bold"><%= character.mass %></span></td>
+	        			<td>Height: <span class="bold"><%= character.height %></span></td>
+	        		</tr>
+	        		<% }); %>
+	        	</tbody>
+	        </table>
+	    </div>
+	</main>
+	<footer>
+	    <% include ../partials/footer %>
+	</footer>
+</body>
+</html>
